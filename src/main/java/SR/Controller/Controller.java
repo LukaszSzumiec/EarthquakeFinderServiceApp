@@ -13,6 +13,7 @@ import org.springframework.web.client.RestTemplate;
 import org.json.JSONObject;
 
 import java.util.ArrayList;
+import java.util.Collections;
 import java.util.List;
 
 public class Controller {
@@ -33,10 +34,8 @@ public class Controller {
             JsonObject metadata = (JsonObject) newObject.get("metadata");
             int count = Integer.parseInt(String.valueOf(metadata.get("count")));
 
-            System.out.println(count);
             if (count < 20) {
                 return makeRequest(latitude, longitude, maxRadius + 5);
-
             }
 
             JSONObject obj = new JSONObject(json);
@@ -56,34 +55,43 @@ public class Controller {
                 var lat = jsonCoords.get(1);
                 var lon = jsonCoords.get(0);
 
-                if (mag.getClass() == Integer.class){
+                if (mag.getClass() == Integer.class) {
                     mag = (double) (int) mag;
                 }
-                if (lat.getClass() == Integer.class){
+                if (lat.getClass() == Integer.class) {
                     lat = (double) (int) lat;
                 }
-                if (lon.getClass() == Integer.class){
+                if (lon.getClass() == Integer.class) {
                     lon = (double) (int) lon;
                 }
-
-                Earthquake earthquake = new Earthquake(
-                        (double) mag,
-                        (String) jsonProperties.get("title"),
-                        (double) lat,
-                        (double) lon,
-                        calculateDistance( Double.valueOf(latitude),Double.valueOf(longitude),(double) lat,(double) lon)
-                );
-                addEarthquakeToList(earthquakeList, earthquake);
+                if (!checkIfContains((double)lat, (double)lon, earthquakeList)) {
+                    Earthquake earthquake = new Earthquake(
+                            (double) mag,
+                            (String) jsonProperties.get("place"),
+                            (double) lat,
+                            (double) lon,
+                            calculateDistance(Double.parseDouble(latitude), Double.parseDouble(longitude), (double) lat, (double) lon)
+                    );
+                    earthquakeList.add(earthquake);
+                }
             }
         }
-        return earthquakeList;
+        earthquakeList.sort(Earthquake::compareTo);
+        return earthquakeList.subList(0,10);
     }
 
-    private void addEarthquakeToList(List<Earthquake> earthquakeList, Earthquake earthquake) {
-
+    private boolean checkIfContains(double lat, double lon, List<Earthquake> earthquakeList){
+        if(earthquakeList.size() != 0){
+            for (Earthquake earthquake : earthquakeList){
+                if (lat == earthquake.latitude || lon == earthquake.longitude)
+                    return true;
+            }
+            return false;
+        }else{
+            return false;
+        }
     }
-
-    private int calculateDistance(double lat1, double lat2, double lon1, double lon2) {
+    private int calculateDistance(double lat1,  double lon1, double lat2, double lon2) {
         lon1 = Math.toRadians(lon1);
         lon2 = Math.toRadians(lon2);
         lat1 = Math.toRadians(lat1);

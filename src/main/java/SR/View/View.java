@@ -16,22 +16,22 @@ public class View {
         String longitude = scanner.nextLine();
 
         try{
-            float latitudeAsFloat = Float.parseFloat(latitude);
-            float longitudeAsFloat = Float.parseFloat(longitude);
+            double latitudeAsFloat = Double.parseDouble(latitude);
+            double longitudeAsFloat = Double.parseDouble(longitude);
 
             if (!checkParameters(latitudeAsFloat, longitudeAsFloat)){
                 throw new Exception();
             }
         } catch (Exception e) {
             System.out.println("Invalid input");
-            getInputValues();
+            return getInputValues();
         }
         List<String> returnValues = new ArrayList<>();
         returnValues.add(latitude);
         returnValues.add(longitude);
         return returnValues;
     }
-    private boolean checkParameters(float latitudeAsFloat, float longitudeAsFloat){
+    private boolean checkParameters(double latitudeAsFloat, double longitudeAsFloat){
         return !(latitudeAsFloat > 180.0) && !(latitudeAsFloat < -180.0) &&
                 !(longitudeAsFloat > 90.0) && !(longitudeAsFloat < -90.0);
     }
