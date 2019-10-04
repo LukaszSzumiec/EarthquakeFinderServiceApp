@@ -1,10 +1,10 @@
-Łukasz Szumiec earthquake client recrutation task (https://github.com/smartrecruiters/ict-nearby-earthquakes-lukasz-szumiec).
 
 Requierments:
 - git
 - java 10
 - ide for example intellij idea
 - python3
+- requests package
 
 I completed task in 2 versions first is in Java, second in Python 3, both have the same functionalyties.
 
